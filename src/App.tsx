@@ -1,22 +1,16 @@
 import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-
+import HomePage from './home';
 
 function App() {
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
-      <Card>
-        <CardHeader>
-          <CardTitle>Skylink</CardTitle>
-          <CardDescription>An inverted social network viewer for Bluesky: putting links first.</CardDescription>
-        </CardHeader>
-      </Card>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 }
