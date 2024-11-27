@@ -2,16 +2,21 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import HomePage from './home';
+import TopPage from './top';
 
 function App() {
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/top" element={<TopPage />} />
+      </Routes>
+      <footer className="border-t-2 pt-4 mt-2 text-right text-xs">
+        <a href="https://github.com/paulmwatson/skylink">
+          github.com/paulmwatson/skylink
+        </a>
+      </footer>
+    </BrowserRouter>
   )
 }
 
