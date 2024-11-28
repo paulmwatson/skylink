@@ -32,11 +32,20 @@ export default function Page() {
           .map((feature: { uri: any; }) => feature.uri);
 
         links.forEach((newLink: string) => {
-          setLinkCounter((prevCounter) => {
-            const updatedCounter = { ...prevCounter };
-            updatedCounter[newLink] = (updatedCounter[newLink] || 0) + 1;
-            return updatedCounter;
-          });
+          try {
+            const validateURL = new URL(newLink);
+            setLinkCounter((prevCounter) => {
+              const updatedCounter = { ...prevCounter };
+              updatedCounter[newLink] = (updatedCounter[newLink] || 0) + 1;
+              return updatedCounter;
+            });
+          } catch (e) {
+            if (e instanceof TypeError) {
+              console.debug(`Not a valid URL, it happens: ${newLink}`)
+            } else {
+              console.error(e);
+            }
+          }
         });
       }
     };
