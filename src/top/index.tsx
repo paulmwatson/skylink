@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { parse } from "tldts";
+import Papa from "papaparse";
 
 import {
   Table,
@@ -11,11 +12,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 import {
   Search,
   ArrowDown,
   ArrowUp,
+  FileDown,
 } from "lucide-react";
 
 interface LinkInfo {
@@ -105,6 +108,22 @@ export default function Page() {
     setSortedColumn(column);
   }
 
+  const downloadCSV = () => {
+    const data = Object.entries(linksWithCount).map(([url, linkInfo]) => ({
+      url,
+      mentions: linkInfo.mentions,
+      domain: linkInfo.domain,
+      publicSuffix: linkInfo.publicSuffix,
+    }));
+
+    const csv = Papa.unparse(data);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'skylink.csv';
+    link.click();
+  };
+
   useEffect(() => {
     sortLinks(sortedColumn);
   }, [linksWithCount, sortedColumn]);
@@ -178,13 +197,24 @@ export default function Page() {
         </TableBody>
         <TableFooter className="sticky bottom-0 text-sm bg-white">
           <TableRow>
-            <TableCell className="whitespace-nowrap" colSpan={5}>
+            <TableCell className="whitespace-nowrap" colSpan={2}>
               <Badge variant="outline" className="mr-2 font-mono text-muted-foreground">
                 {postCount.toLocaleString()} Posts
               </Badge>
               <Badge variant="outline" className="font-mono text-muted-foreground">
                 {Object.entries(linksWithCount).length.toLocaleString()} Unique Links
               </Badge>
+            </TableCell>
+            <TableCell colSpan={3} className="text-right">
+              <Button
+                onClick={() => downloadCSV()}
+                variant="outline"
+                size="sm"
+                title="Download all collected links as a CSV file"
+                className="text-muted-foreground">
+                <FileDown size={"sm"} className="text-muted-foreground" />
+                Download
+              </Button>
             </TableCell>
           </TableRow>
         </TableFooter>
