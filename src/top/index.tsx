@@ -12,8 +12,6 @@ import {
 
 import { Search, ArrowDown, ArrowUp } from "lucide-react";
 
-import BlueskyLogo from "@/assets/bluesky-logo.svg?react";
-
 interface LinkInfo {
   mentions: number;
   domain: string | null;
