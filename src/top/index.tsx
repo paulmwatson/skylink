@@ -27,16 +27,19 @@ interface LinkInfo {
   publicSuffix: string | null;
   cleanedUrl: string | null;
   encodedUrl: string | null;
+  seen: Date[];
+  firstSeen: Date;
+  lastSeen: Date;
 }
 
-type SortableColumn = 'mentions' | 'domain' | 'publicSuffix' | 'cleanedUrl';
+type SortableColumn = 'mentions' | 'domain' | 'publicSuffix' | 'cleanedUrl' | 'firstSeen' | 'lastSeen';
 type LinkWithCount = { [key: string]: LinkInfo };
 type LinkWithInfo = [string, LinkInfo];
 
 export default function Page() {
   const [linksWithCount, setLinksWithCount] = useState<LinkWithCount>({});
   const [sortedLinks, setSortedLinks] = useState<LinkWithInfo[]>([]);
-  const [sortedColumn, setSortedColumn] = useState<SortableColumn>('mentions');
+  const [sortedColumn, setSortedColumn] = useState<SortableColumn>('lastSeen');
   const [sortDirection, setSortDirection] = useState<'desc' | 'asc'>('desc');
   const [postCount, setPostCount] = useState<number>(0);
 
@@ -51,6 +54,7 @@ export default function Page() {
       setPostCount(prevCount => prevCount + 1);
 
       if (data.kind === 'commit' && data.commit.record?.facets) {
+        const createdAt = new Date(data.time_us / 1000);
         const links = data.commit.record.facets
           .flatMap((facet: { features: any; }) => facet.features)
           .filter((feature: { [x: string]: string; }) => feature['$type'] === 'app.bsky.richtext.facet#link')
@@ -62,15 +66,26 @@ export default function Page() {
           if (parsedLink.domain != null) {
             setLinksWithCount((prevCounter) => {
               const updatedCounter = { ...prevCounter };
-              updatedCounter[newLink] = {
-                mentions: (updatedCounter[newLink]?.mentions || 0) + 1,
-                domain: parsedLink.domain,
-                publicSuffix: parsedLink.publicSuffix,
-                cleanedUrl: newLink.replace('http://', '')
-                  .replace('https://', '')
-                  .replace('www.', ''),
-                encodedUrl: encodeURIComponent(newLink)
-              };
+              if (updatedCounter[newLink]) {
+                const existingLinkInfo = updatedCounter[newLink];
+                existingLinkInfo.seen.push(createdAt);
+                existingLinkInfo.lastSeen = createdAt;
+                existingLinkInfo.mentions += 1;
+              } else {
+                updatedCounter[newLink] = {
+                  mentions: 1,
+                  domain: parsedLink.domain,
+                  publicSuffix: parsedLink.publicSuffix,
+                  cleanedUrl: newLink.replace('http://', '')
+                    .replace('https://', '')
+                    .replace('www.', ''),
+                  encodedUrl: encodeURIComponent(newLink),
+                  seen: [createdAt],
+                  firstSeen: createdAt,
+                  lastSeen: createdAt
+                };
+              }
+
               return updatedCounter;
             });
           }
@@ -85,19 +100,31 @@ export default function Page() {
 
   const sortLinks = (column: keyof LinkInfo) => {
     const sorted = Object.entries(linksWithCount).sort(([_keyA, valueA], [_keyB, valueB]) => {
+      let comparison = 0;
       if (column === 'mentions') {
-        if (sortDirection === 'desc') {
-          return valueB[column] - valueA[column];
-        } else {
-          return valueA[column] - valueB[column];
-        }
-      } else {
-        if (sortDirection === 'desc') {
-          return (valueA[column] as string).localeCompare(valueB[column] as string);
-        } else {
-          return (valueB[column] as string).localeCompare(valueA[column] as string);
+        comparison = valueB[column] - valueA[column];
+        if (sortDirection === 'asc') {
+          comparison = valueA[column] - valueB[column];
         }
       }
+      else if (column === 'firstSeen' || column === 'lastSeen') {
+        const dateA = valueA[column] as Date;
+        const dateB = valueB[column] as Date;
+        comparison = dateB.getTime() - dateA.getTime();
+        if (sortDirection === 'asc') {
+          comparison = dateA.getTime() - dateB.getTime();
+        }
+      }
+      else {
+        const stringA = (valueA[column] as string) || '';
+        const stringB = (valueB[column] as string) || '';
+        comparison = stringB.localeCompare(stringA);
+        if (sortDirection === 'asc') {
+          comparison = stringA.localeCompare(stringB);
+        }
+      }
+
+      return comparison;
     }).slice(0, 1000);
 
     setSortedLinks(sorted);
@@ -114,6 +141,8 @@ export default function Page() {
       mentions: linkInfo.mentions,
       domain: linkInfo.domain,
       publicSuffix: linkInfo.publicSuffix,
+      firstSeen: linkInfo.firstSeen,
+      lastSeen: linkInfo.lastSeen
     }));
 
     const csv = Papa.unparse(data);
@@ -174,6 +203,18 @@ export default function Page() {
                 {SortDirectionIndicator("mentions")}
               </div>
             </TableHead>
+            <TableHead className="cursor-pointer hover:text-sky-700" onClick={() => changeSort('firstSeen')}>
+              <div className="flex items-center whitespace-nowrap">
+                First Seen
+                {SortDirectionIndicator("firstSeen")}
+              </div>
+            </TableHead>
+            <TableHead className="cursor-pointer hover:text-sky-700" onClick={() => changeSort('lastSeen')}>
+              <div className="flex items-center whitespace-nowrap">
+                Last Seen
+                {SortDirectionIndicator("lastSeen")}
+              </div>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="bg-gray-100">
@@ -192,6 +233,8 @@ export default function Page() {
               <TableCell>{item.domain}</TableCell>
               <TableCell>{item.publicSuffix}</TableCell>
               <TableCell className="text-center">{item.mentions.toLocaleString()}</TableCell>
+              <TableCell className="text-center text-xs whitespace-nowrap">{item.seen[0].toLocaleString()}</TableCell>
+              <TableCell className="text-center text-xs whitespace-nowrap">{item.seen[item.seen.length - 1].toLocaleString()}</TableCell>
             </TableRow>
           )}
         </TableBody>
@@ -205,7 +248,7 @@ export default function Page() {
                 {Object.entries(linksWithCount).length.toLocaleString()} Unique Links
               </Badge>
             </TableCell>
-            <TableCell colSpan={3} className="text-right">
+            <TableCell colSpan={5} className="text-right">
               <Button
                 onClick={() => downloadCSV()}
                 variant="outline"
