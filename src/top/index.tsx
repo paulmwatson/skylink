@@ -5,12 +5,18 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
-import { Search, ArrowDown, ArrowUp } from "lucide-react";
+import {
+  Search,
+  ArrowDown,
+  ArrowUp,
+} from "lucide-react";
 
 interface LinkInfo {
   mentions: number;
@@ -40,6 +46,7 @@ export default function Page() {
     wsCurrent.onmessage = event => {
       const data = JSON.parse(event.data);
       setPostCount(prevCount => prevCount + 1);
+
       if (data.kind === 'commit' && data.commit.record?.facets) {
         const links = data.commit.record.facets
           .flatMap((facet: { features: any; }) => facet.features)
@@ -114,13 +121,15 @@ export default function Page() {
 
   return (
     <section>
-      <h2 className="text-2xl font-bold tracking-tight">Links On Bluesky</h2>
-      <p className="text-muted-foreground">Live tally of {Object.entries(linksWithCount).length.toLocaleString()} unique links mentioned in {postCount.toLocaleString()} Bluesky posts. Runs in your browser, nothing is stored.</p>
-      <Table className="table-auto w-full my-2 has-sticky-header">
-        <TableHeader className="sticky top-0 bg-gray-50">
+      <header className="p-5">
+        <h2 className="text-2xl font-bold tracking-tight">Links On Bluesky</h2>
+        <p className="text-muted-foreground">Live tally of unique links mentioned in Bluesky posts. Runs in your browser, nothing is stored.</p>
+      </header>
+      <Table className="table-auto w-full has-sticky-header">
+        <TableHeader className="sticky top-0 bg-white">
           <TableRow>
             <TableHead>
-              <img alt="A blue butterfly, the Bluesky logo" src="/images/bluesky-logo.svg" width="12" height="12" />
+              <img alt="A blue butterfly, the Bluesky logo" src="/images/bluesky-logo.svg" width="12" height="12" className="mx-auto" />
             </TableHead>
             <TableHead className="cursor-pointer hover:text-sky-700 w-full" onClick={() => changeSort('cleanedUrl')}>
               <div className="flex items-center whitespace-nowrap">
@@ -136,7 +145,7 @@ export default function Page() {
             </TableHead>
             <TableHead className="cursor-pointer hover:text-sky-700" onClick={() => changeSort('publicSuffix')}>
               <div className="flex items-center whitespace-nowrap">
-                <abbr title="Public Suffix actually">TLD</abbr>
+                <abbr title="Public Suffix">TLD</abbr>
                 {SortDirectionIndicator("publicSuffix")}
               </div>
             </TableHead>
@@ -148,7 +157,7 @@ export default function Page() {
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className="bg-gray-100">
           {sortedLinks.map(([link, item]) =>
             <TableRow key={link}>
               <TableCell className="text-center">
@@ -167,6 +176,18 @@ export default function Page() {
             </TableRow>
           )}
         </TableBody>
+        <TableFooter className="sticky bottom-0 text-sm bg-white">
+          <TableRow>
+            <TableCell className="whitespace-nowrap" colSpan={5}>
+              <Badge variant="outline" className="mr-2 font-mono text-muted-foreground">
+                {postCount.toLocaleString()} Posts
+              </Badge>
+              <Badge variant="outline" className="font-mono text-muted-foreground">
+                {Object.entries(linksWithCount).length.toLocaleString()} Unique Links
+              </Badge>
+            </TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
     </section>
 

@@ -11,7 +11,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/top" element={<TopPage />} />
       </Routes>
-      <footer className="border-t-2 pt-4 mt-2 text-right text-xs">
+      <footer className="p-5 text-right text-xs">
         <a href="https://github.com/paulmwatson/skylink" target="_blank">
           github.com/paulmwatson/skylink
         </a>
