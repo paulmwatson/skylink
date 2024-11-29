@@ -12,6 +12,8 @@ import {
 
 import { Search, ArrowDown, ArrowUp } from "lucide-react";
 
+import BlueskyLogo from "@/assets/bluesky-logo.svg?react";
+
 interface LinkInfo {
   mentions: number;
   domain: string | null;
@@ -120,6 +122,7 @@ export default function Page() {
         <TableHeader>
           <TableRow>
             <TableHead>
+              <img src="/images/bluesky-logo.svg" width="12" height="12" />
             </TableHead>
             <TableHead className="cursor-pointer hover:text-sky-700 w-full" onClick={() => changeSort('cleanedUrl')}>
               <div className="flex items-center whitespace-nowrap">
