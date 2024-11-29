@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { parse } from "tldts";
 
 import {
   Table,
@@ -33,7 +34,7 @@ export default function Page() {
 
         links.forEach((newLink: string) => {
           try {
-            const validateURL = new URL(newLink);
+            new URL(newLink);
             setLinkCounter((prevCounter) => {
               const updatedCounter = { ...prevCounter };
               updatedCounter[newLink] = (updatedCounter[newLink] || 0) + 1;
@@ -71,6 +72,7 @@ export default function Page() {
               </TableHead>
               <TableHead className="w-full">URL</TableHead>
               <TableHead>Domain</TableHead>
+              <TableHead><abbr title="Public Suffix actually">TLD</abbr></TableHead>
               <TableHead className="flex items-center whitespace-nowrap">
                 Mentions
                 <ArrowDown size={12} className="ml-2" />
@@ -92,7 +94,8 @@ export default function Page() {
                       .replace('www.', '')}
                   </a>
                 </TableCell>
-                <TableCell>{new URL(link).host.replace("www.", '')}</TableCell>
+                <TableCell>{parse(link).hostname?.replace("www.", '')}</TableCell>
+                <TableCell>{parse(link).publicSuffix}</TableCell>
                 <TableCell className="text-center">{count}</TableCell>
               </TableRow>
             )}
