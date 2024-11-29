@@ -137,12 +137,12 @@ export default function Page() {
 
   const downloadCSV = () => {
     const data = Object.entries(linksWithCount).map(([url, linkInfo]) => ({
-      url,
       mentions: linkInfo.mentions,
       domain: linkInfo.domain,
       publicSuffix: linkInfo.publicSuffix,
       firstSeen: linkInfo.firstSeen,
-      lastSeen: linkInfo.lastSeen
+      lastSeen: linkInfo.lastSeen,
+      url
     }));
 
     const csv = Papa.unparse(data);
@@ -150,6 +150,20 @@ export default function Page() {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'skylink.csv';
+    link.click();
+  };
+
+  const downloadJSON = () => {
+    const jsonString = JSON.stringify(linksWithCount, (key, value) => {
+      if (key === 'encodedUrl' || key === 'cleanedUrl') {
+        return undefined;
+      }
+      return value;
+    });
+    const blob = new Blob([jsonString], { type: 'text/json;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'skylink.json';
     link.click();
   };
 
@@ -250,13 +264,22 @@ export default function Page() {
             </TableCell>
             <TableCell colSpan={5} className="text-right">
               <Button
+                onClick={() => downloadJSON()}
+                variant="outline"
+                size="sm"
+                title="Download all collected links as a JSON file"
+                className="text-muted-foreground mr-2">
+                <FileDown size={"sm"} className="text-muted-foreground" />
+                Download JSON
+              </Button>
+              <Button
                 onClick={() => downloadCSV()}
                 variant="outline"
                 size="sm"
                 title="Download all collected links as a CSV file"
                 className="text-muted-foreground">
                 <FileDown size={"sm"} className="text-muted-foreground" />
-                Download
+                Download CSV
               </Button>
             </TableCell>
           </TableRow>
