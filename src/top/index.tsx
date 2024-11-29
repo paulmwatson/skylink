@@ -116,11 +116,11 @@ export default function Page() {
     <section>
       <h2 className="text-2xl font-bold tracking-tight">Links On Bluesky</h2>
       <p className="text-muted-foreground">Live tally of {Object.entries(linksWithCount).length.toLocaleString()} unique links mentioned in {postCount.toLocaleString()} Bluesky posts. Runs in your browser, nothing is stored.</p>
-      <Table className="table-auto w-full my-2">
-        <TableHeader>
+      <Table className="table-auto w-full my-2 has-sticky-header">
+        <TableHeader className="sticky top-0 bg-gray-50">
           <TableRow>
             <TableHead>
-              <img src="/images/bluesky-logo.svg" width="12" height="12" />
+              <img alt="A blue butterfly, the Bluesky logo" src="/images/bluesky-logo.svg" width="12" height="12" />
             </TableHead>
             <TableHead className="cursor-pointer hover:text-sky-700 w-full" onClick={() => changeSort('cleanedUrl')}>
               <div className="flex items-center whitespace-nowrap">

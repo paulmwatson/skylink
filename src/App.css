@@ -1,0 +1,4 @@
+div:has(> .has-sticky-header) {
+    position: unset;
+    overflow: unset;
+}
