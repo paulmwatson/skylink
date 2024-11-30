@@ -275,26 +275,26 @@ export default function Page() {
               <Button
                 onClick={() => downloadJSON()}
                 variant="outline"
-                size="sm"
+                size={"sm"}
                 title="Download all collected links as a JSON file"
                 className="text-muted-foreground mr-2">
-                <FileDown size="sm" className="text-muted-foreground" />
+                <FileDown size={12} className="text-muted-foreground" />
                 Download JSON
               </Button>
               <Button
                 onClick={() => downloadCSV()}
                 variant="outline"
-                size="sm"
+                size={"sm"}
                 title="Download all collected links as a CSV file"
                 className="text-muted-foreground mr-2">
-                <FileDown size="sm" className="text-muted-foreground" />
+                <FileDown size={12} className="text-muted-foreground" />
                 Download CSV
               </Button>
-              {pauseCollection && <Button variant="outline" size="sm" onClick={() => setPauseCollection(false)} title="Resume collection of links">
-                <Play size="sm" className="text-muted-foreground text-green-500" />
+              {pauseCollection && <Button variant="outline" size={"sm"} onClick={() => setPauseCollection(false)} title="Resume collection of links">
+                <Play size={12} className="text-muted-foreground text-green-500" />
               </Button>}
-              {!pauseCollection && <Button variant="outline" size="sm" onClick={() => setPauseCollection(true)} title="Pause collection of links">
-                <Pause size="sm" className="text-muted-foreground text-yellow-500" />
+              {!pauseCollection && <Button variant="outline" size={"sm"} onClick={() => setPauseCollection(true)} title="Pause collection of links">
+                <Pause size={12} className="text-muted-foreground text-yellow-500" />
               </Button>}
             </TableCell>
           </TableRow>
