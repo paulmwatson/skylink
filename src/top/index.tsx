@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { LinkWithCount, LinkWithInfo, SortableColumn } from "@/types";
 import { parse } from "tldts";
 import Papa from "papaparse";
 
@@ -22,21 +23,6 @@ import {
   Play,
   Pause
 } from "lucide-react";
-
-interface LinkInfo {
-  mentions: number;
-  domain: string | null;
-  publicSuffix: string | null;
-  cleanedUrl: string | null;
-  encodedUrl: string | null;
-  seen: Date[];
-  firstSeen: Date;
-  lastSeen: Date;
-}
-
-type SortableColumn = 'mentions' | 'domain' | 'publicSuffix' | 'cleanedUrl' | 'firstSeen' | 'lastSeen';
-type LinkWithCount = { [key: string]: LinkInfo };
-type LinkWithInfo = [string, LinkInfo];
 
 export default function Page() {
   const [linksWithCount, setLinksWithCount] = useState<LinkWithCount>({});
