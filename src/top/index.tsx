@@ -19,6 +19,8 @@ import {
   ArrowDown,
   ArrowUp,
   FileDown,
+  Play,
+  Pause
 } from "lucide-react";
 
 interface LinkInfo {
@@ -42,14 +44,21 @@ export default function Page() {
   const [sortedColumn, setSortedColumn] = useState<SortableColumn>('lastSeen');
   const [sortDirection, setSortDirection] = useState<'desc' | 'asc'>('desc');
   const [postCount, setPostCount] = useState<number>(0);
+  const [pauseCollection, setPauseCollection] = useState<Boolean>(false);
 
+  const pauseCollectionRef = useRef<Boolean>(pauseCollection);
   const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    pauseCollectionRef.current = pauseCollection;
+  }, [pauseCollection]);
 
   useEffect(() => {
     ws.current = new WebSocket("wss://jetstream2.us-east.bsky.network/subscribe?wantedCollections=app.bsky.feed.post");
     const wsCurrent = ws.current;
 
     wsCurrent.onmessage = event => {
+      if (pauseCollectionRef.current) return;
       const data = JSON.parse(event.data);
       setPostCount(prevCount => prevCount + 1);
 
@@ -181,6 +190,16 @@ export default function Page() {
     }
   }
 
+  const PausedIndicator = () => {
+    if (pauseCollection) return <Button variant="outline" size="sm" onClick={() => setPauseCollection(false)} title="Resume collection of links">
+      <Play size="sm" className="text-muted-foreground text-green-500" />
+    </Button>
+    else
+      return <Button variant="outline" size="sm" onClick={() => setPauseCollection(true)} title="Pause collection of links">
+        <Pause size="sm" className="text-muted-foreground text-yellow-500" />
+      </Button>;
+  };
+
   return (
     <section>
       <header className="p-5">
@@ -269,7 +288,7 @@ export default function Page() {
                 size="sm"
                 title="Download all collected links as a JSON file"
                 className="text-muted-foreground mr-2">
-                <FileDown size={"sm"} className="text-muted-foreground" />
+                <FileDown size="sm" className="text-muted-foreground" />
                 Download JSON
               </Button>
               <Button
@@ -277,10 +296,11 @@ export default function Page() {
                 variant="outline"
                 size="sm"
                 title="Download all collected links as a CSV file"
-                className="text-muted-foreground">
-                <FileDown size={"sm"} className="text-muted-foreground" />
+                className="text-muted-foreground mr-2">
+                <FileDown size="sm" className="text-muted-foreground" />
                 Download CSV
               </Button>
+              {PausedIndicator()}
             </TableCell>
           </TableRow>
         </TableFooter>
