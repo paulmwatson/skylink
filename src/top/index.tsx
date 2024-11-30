@@ -190,16 +190,6 @@ export default function Page() {
     }
   }
 
-  const PausedIndicator = () => {
-    if (pauseCollection) return <Button variant="outline" size="sm" onClick={() => setPauseCollection(false)} title="Resume collection of links">
-      <Play size="sm" className="text-muted-foreground text-green-500" />
-    </Button>
-    else
-      return <Button variant="outline" size="sm" onClick={() => setPauseCollection(true)} title="Pause collection of links">
-        <Pause size="sm" className="text-muted-foreground text-yellow-500" />
-      </Button>;
-  };
-
   return (
     <section>
       <header className="p-5">
@@ -300,12 +290,16 @@ export default function Page() {
                 <FileDown size="sm" className="text-muted-foreground" />
                 Download CSV
               </Button>
-              {PausedIndicator()}
+              {pauseCollection && <Button variant="outline" size="sm" onClick={() => setPauseCollection(false)} title="Resume collection of links">
+                <Play size="sm" className="text-muted-foreground text-green-500" />
+              </Button>}
+              {!pauseCollection && <Button variant="outline" size="sm" onClick={() => setPauseCollection(true)} title="Pause collection of links">
+                <Pause size="sm" className="text-muted-foreground text-yellow-500" />
+              </Button>}
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
     </section>
-
   )
 }
