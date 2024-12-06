@@ -51,6 +51,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
         </Button>
       )
     },
+    cell: ({ row }) => <div className="min-w-48 max-w-48 truncate whitespace-nowrap">{row.original.domain}</div>
   },
   {
     accessorKey: "publicSuffix",
@@ -77,7 +78,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Mentions
+          #
           {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
           {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}

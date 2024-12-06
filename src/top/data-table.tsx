@@ -4,6 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -21,7 +22,7 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { FileDown, Pause, Play } from "lucide-react"
+import { ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, FileDown, Pause, Play } from "lucide-react"
 import { LinkWithCount } from "@/types"
 import { useState } from "react"
 
@@ -52,15 +53,25 @@ export function DataTable<TData, TValue>({
       desc: false
     }
   ]);
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 500,
+  });
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
+      pagination
     },
+
+    autoResetPageIndex: false
   });
 
   return (
@@ -107,21 +118,21 @@ export function DataTable<TData, TValue>({
       </TableBody>
       <TableFooter className="sticky bottom-0 text-sm bg-white">
         <TableRow>
-          <TableCell className="whitespace-nowrap" colSpan={2}>
-            <Badge variant="outline" className="mr-2 font-mono text-muted-foreground">
+          <TableCell colSpan={2}>
+            <Badge variant="outline" className="mx-1 font-mono text-muted-foreground">
               {postCount.toLocaleString()} Posts
             </Badge>
-            <Badge variant="outline" className="font-mono text-muted-foreground">
+            <Badge variant="outline" className="mx-1 font-mono text-muted-foreground">
               {Object.entries(linksWithCount).length.toLocaleString()} Unique Links
             </Badge>
           </TableCell>
-          <TableCell colSpan={5} className="text-right">
+          <TableCell className="text-right" colSpan={5}>
             <Button
               onClick={() => downloadJSON()}
               variant="outline"
               size={"sm"}
               title="Download all collected links as a JSON file"
-              className="text-muted-foreground mr-2">
+              className="text-muted-foreground mx-1">
               <FileDown size={12} className="text-muted-foreground" />
               Download JSON
             </Button>
@@ -130,16 +141,76 @@ export function DataTable<TData, TValue>({
               variant="outline"
               size={"sm"}
               title="Download all collected links as a CSV file"
-              className="text-muted-foreground mr-2">
+              className="text-muted-foreground mx-1">
               <FileDown size={12} className="text-muted-foreground" />
               Download CSV
             </Button>
-            {pauseCollection && <Button variant="outline" size={"sm"} onClick={() => setPauseCollection(false)} title="Resume collection of links">
+            <Button
+              className="mx-1"
+              variant="outline"
+              size={"sm"}
+              onClick={() => setPagination({
+                pageIndex: 0,
+                pageSize: pagination.pageSize,
+              })}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronFirst />
+            </Button>
+            <Button
+              className="mx-1"
+              variant="outline"
+              size={"sm"}
+              onClick={() => setPagination({
+                pageIndex: table.getState().pagination.pageIndex - 1,
+                pageSize: pagination.pageSize,
+              })}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronLeft />
+            </Button>
+            {pauseCollection && <Button 
+              className="text-muted-foreground mx-1 text-xs" 
+              variant="outline" 
+              size={"sm"} 
+              onClick={() => setPauseCollection(false)} 
+              title="Resume collection of links">
               <Play size={12} className="text-muted-foreground text-green-400" />
+              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
             </Button>}
-            {!pauseCollection && <Button variant="outline" size={"sm"} onClick={() => setPauseCollection(true)} title="Pause collection of links">
+            {!pauseCollection && <Button
+              className="text-muted-foreground mx-1 text-xs"
+              variant="outline"
+              size={"sm"}
+              onClick={() => setPauseCollection(true)} 
+              title="Pause collection of links">
               <Pause size={12} className="text-muted-foreground text-yellow-500" />
+              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
             </Button>}
+            <Button
+              className="mx-1"
+              variant="outline"
+              size={"sm"}
+              onClick={() => setPagination({
+                pageIndex: table.getState().pagination.pageIndex + 1,
+                pageSize: pagination.pageSize,
+              })}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronRight />
+            </Button>
+            <Button
+              className="mx-1"
+              variant="outline"
+              size={"sm"}
+              onClick={() => setPagination({
+                pageIndex: table.getPageCount() - 1,
+                pageSize: pagination.pageSize,
+              })}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronLast />
+            </Button>
           </TableCell>
         </TableRow>
       </TableFooter>

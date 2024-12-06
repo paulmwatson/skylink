@@ -75,7 +75,7 @@ export default function Page() {
   }, []);
 
   const sortLinks = () => {
-    const sorted = Object.entries(linksWithCount).slice(0, 1000);
+    const sorted = Object.entries(linksWithCount);
     setSortedLinks(sorted);
   };
 
