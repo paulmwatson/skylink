@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { LinkInfo } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, Search } from "lucide-react"
+import { ArrowDown, ArrowUp, MessageCircle, Search, UserPen } from "lucide-react"
 
 export const columns: ColumnDef<LinkInfo>[] = [
   {
@@ -78,7 +78,9 @@ export const columns: ColumnDef<LinkInfo>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          #
+          <abbr title="Number of mentions of the URL">
+            <MessageCircle />
+          </abbr>
           {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
           {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
@@ -86,6 +88,36 @@ export const columns: ColumnDef<LinkInfo>[] = [
       )
     },
     cell: ({ row }) => <div className="text-center">{row.original.mentions.toLocaleString()}</div>
+  },
+  {
+    accessorKey: "dids",
+    invertSorting: true,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <abbr title="Unique posters">
+            <UserPen />
+          </abbr>
+          {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
+          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="text-center">{row.original.dids.size}</div>,
+    sortingFn: (rowA, rowB) => {
+      const setA = rowA.getValue('dids') as Set<string>;
+      const setB = rowB.getValue('dids') as Set<string>;
+      const sizeA = setA.size;
+      const sizeB = setB.size;
+
+      if (sizeA < sizeB) return -1;
+      if (sizeA > sizeB) return 1;
+      return 0;
+    }
   },
   {
     accessorKey: "firstSeen",

@@ -8,6 +8,7 @@ export interface LinkInfo {
   firstSeen: Date;
   lastSeen: Date;
   originalUrl: string;
+  dids: Set<string>;
 }
 
 export type SortableColumn = 'mentions' | 'domain' | 'publicSuffix' | 'cleanedUrl' | 'firstSeen' | 'lastSeen';
