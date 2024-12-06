@@ -126,7 +126,7 @@ export function DataTable<TData, TValue>({
               {Object.entries(linksWithCount).length.toLocaleString()} Unique Links
             </Badge>
           </TableCell>
-          <TableCell className="text-right" colSpan={5}>
+          <TableCell className="text-right" colSpan={columns.length - 2}>
             <Button
               onClick={() => downloadJSON()}
               variant="outline"

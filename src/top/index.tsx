@@ -30,6 +30,7 @@ export default function Page() {
 
       if (data.kind === 'commit' && data.commit.record?.facets) {
         const createdAt = new Date(data.time_us / 1000);
+        const did = data.did;
         const links = data.commit.record.facets
           .flatMap((facet: { features: any; }) => facet.features)
           .filter((feature: { [x: string]: string; }) => feature['$type'] === 'app.bsky.richtext.facet#link')
@@ -44,6 +45,7 @@ export default function Page() {
               if (updatedCounter[newLink]) {
                 const existingLinkInfo = updatedCounter[newLink];
                 existingLinkInfo.seen.push(createdAt);
+                existingLinkInfo.dids.add(did);
                 existingLinkInfo.lastSeen = createdAt;
                 existingLinkInfo.mentions += 1;
               } else {
@@ -56,6 +58,7 @@ export default function Page() {
                     .replace('www.', ''),
                   encodedUrl: encodeURIComponent(newLink),
                   seen: [createdAt],
+                  dids: new Set([did]),
                   firstSeen: createdAt,
                   lastSeen: createdAt,
                   originalUrl: newLink
@@ -102,7 +105,7 @@ export default function Page() {
       if (key === 'encodedUrl' || key === 'cleanedUrl') {
         return undefined;
       }
-      return value;
+      return (value instanceof Set ? [...value] : value)
     });
 
     const blob = new Blob([jsonString], { type: 'text/json;charset=utf-8;' });
