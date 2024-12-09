@@ -34,7 +34,7 @@ export default function Page() {
         const links = data.commit.record.facets
           .flatMap((facet: { features: any; }) => facet.features)
           .filter((feature: { [x: string]: string; }) => feature['$type'] === 'app.bsky.richtext.facet#link')
-          .map((feature: { uri: any; }) => feature.uri);
+          .map((feature: { uri: any; }) => feature.uri.toLocaleLowerCase());
 
         links.forEach((newLink: string) => {
           const parsedLink = parse(newLink);
