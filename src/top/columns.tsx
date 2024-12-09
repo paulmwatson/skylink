@@ -7,11 +7,34 @@ import { ArrowDown, ArrowUp, MessageCircle, Search, UserPen } from "lucide-react
 
 export const columns: ColumnDef<LinkInfo>[] = [
   {
-    accessorKey: "encodedUrl",
-    header: () => <img alt="A blue butterfly, the Bluesky logo" src="/images/bluesky-logo.svg" width="12" height="12" className="mx-auto" />,
-    cell: ({ row }) => <a href={`https://bsky.app/search?q=${row.original.encodedUrl}`} target="_blank" title="Search Bsky.app for this URL" className="mx-auto block hover:text-sky-700">
-      <Search size={12} />
-    </a>
+    accessorKey: "dids",
+    invertSorting: true,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <abbr title="Unique posters">
+            <UserPen />
+          </abbr>
+          {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
+          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="text-center">{row.original.dids.size}</div>,
+    sortingFn: (rowA, rowB) => {
+      const setA = rowA.getValue('dids') as Set<string>;
+      const setB = rowB.getValue('dids') as Set<string>;
+      const sizeA = setA.size;
+      const sizeB = setB.size;
+
+      if (sizeA < sizeB) return -1;
+      if (sizeA > sizeB) return 1;
+      return 0;
+    }
   },
   {
     accessorKey: "cleanedUrl",
@@ -89,36 +112,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
     },
     cell: ({ row }) => <div className="text-center">{row.original.mentions.toLocaleString()}</div>
   },
-  {
-    accessorKey: "dids",
-    invertSorting: true,
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <abbr title="Unique posters">
-            <UserPen />
-          </abbr>
-          {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className="text-center">{row.original.dids.size}</div>,
-    sortingFn: (rowA, rowB) => {
-      const setA = rowA.getValue('dids') as Set<string>;
-      const setB = rowB.getValue('dids') as Set<string>;
-      const sizeA = setA.size;
-      const sizeB = setB.size;
 
-      if (sizeA < sizeB) return -1;
-      if (sizeA > sizeB) return 1;
-      return 0;
-    }
-  },
   {
     accessorKey: "firstSeen",
     invertSorting: true,
@@ -154,5 +148,12 @@ export const columns: ColumnDef<LinkInfo>[] = [
       )
     },
     cell: ({ row }) => <div className="text-xs whitespace-nowrap">{row.original.lastSeen.toLocaleString()}</div>
+  },
+  {
+    accessorKey: "encodedUrl",
+    header: () => <img alt="A blue butterfly, the Bluesky logo" src="/images/bluesky-logo.svg" width="12" height="12" className="mx-auto" />,
+    cell: ({ row }) => <a href={`https://bsky.app/search?q=${row.original.encodedUrl}`} target="_blank" title="Search Bsky.app for this URL" className="mx-auto block hover:text-sky-700">
+      <Search size={12} />
+    </a>
   },
 ]
