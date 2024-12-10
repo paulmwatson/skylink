@@ -3,7 +3,9 @@
 import { Button } from "@/components/ui/button"
 import { LinkInfo } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, MessageCircle, Search, UserPen } from "lucide-react"
+import { ArrowDown, ArrowUp, ClockArrowDown, ClockArrowUp, MessageCircle, Search, UserPen } from "lucide-react"
+
+const formattedTime = (date: Date) => `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
 
 export const columns: ColumnDef<LinkInfo>[] = [
   {
@@ -120,16 +122,17 @@ export const columns: ColumnDef<LinkInfo>[] = [
       return (
         <Button
           variant="ghost"
+          title="When the URL was first seen"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          First Seen
+          <ClockArrowUp />
           {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
           {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-xs whitespace-nowrap">{row.original.firstSeen.toLocaleString()}</div>
+    cell: ({ row }) => <abbr title={row.original.firstSeen.toTimeString()} className="text-xs text-center block whitespace-nowrap">{formattedTime(row.original.firstSeen)}</abbr>
   },
   {
     accessorKey: "lastSeen",
@@ -138,16 +141,17 @@ export const columns: ColumnDef<LinkInfo>[] = [
       return (
         <Button
           variant="ghost"
+          title="When the URL was last seen"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Last Seen
+          <ClockArrowDown />
           {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
           {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-xs whitespace-nowrap">{row.original.lastSeen.toLocaleString()}</div>
+    cell: ({ row }) => <abbr title={row.original.lastSeen.toTimeString()} className="text-xs text-center block whitespace-nowrap">{formattedTime(row.original.lastSeen)}</abbr>
   },
   {
     accessorKey: "encodedUrl",
