@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <Table className="table-auto w-full has-sticky-header">
-      <TableHeader className="sticky top-0 bg-white">
+      <TableHeader className="sticky top-0 bg-white dark:bg-black">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header, i) => {
@@ -94,12 +94,13 @@ export function DataTable<TData, TValue>({
           </TableRow>
         ))}
       </TableHeader>
-      <TableBody className="bg-gray-100">
+      <TableBody className="bg-gray-100 dark:bg-gray-950">
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
+              className="dark:border-slate-900"
             >
               {row.getVisibleCells().map((cell, i) => (
                 <TableCell key={cell.id} className={i === 1 ? 'max-w-xs truncate whitespace-nowrap' : ''}>
@@ -116,7 +117,7 @@ export function DataTable<TData, TValue>({
           </TableRow>
         )}
       </TableBody>
-      <TableFooter className="sticky bottom-0 text-sm bg-white">
+      <TableFooter className="sticky bottom-0 text-sm bg-white dark:bg-black">
         <TableRow>
           <TableCell colSpan={2}>
             <Badge variant="outline" className="mx-1 font-mono text-muted-foreground">

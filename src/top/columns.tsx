@@ -22,7 +22,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
           </abbr>
           {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
+          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
         </Button>
       )
     },
@@ -50,7 +50,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
           URL
           {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200" />}
+          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
         </Button>
       )
     },
@@ -72,7 +72,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
           Domain
           {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200" />}
+          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
         </Button>
       )
     },
@@ -89,7 +89,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
           <abbr title="Public Suffix">TLD</abbr>
           {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200" />}
+          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
         </Button>
       )
     },
@@ -108,7 +108,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
           </abbr>
           {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
+          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
         </Button>
       )
     },
@@ -128,7 +128,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
           <ClockArrowUp />
           {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
+          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
         </Button>
       )
     },
@@ -147,7 +147,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
           <ClockArrowDown />
           {column.getIsSorted() === "asc" && <ArrowDown className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200" />}
+          {!column.getIsSorted() && <ArrowDown className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
         </Button>
       )
     },
