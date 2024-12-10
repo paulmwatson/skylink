@@ -157,7 +157,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
     accessorKey: "encodedUrl",
     header: () => <img alt="A blue butterfly, the Bluesky logo" src="/images/bluesky-logo.svg" width="12" height="12" className="mx-auto" />,
     cell: ({ row }) => <a href={`https://bsky.app/search?q=${row.original.encodedUrl}`} target="_blank" title="Search Bsky.app for this URL" className="mx-auto block hover:text-sky-700">
-      <Search size={12} />
+      <Search size={12} className="mr-2 ml-1" />
     </a>
   },
 ]
