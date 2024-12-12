@@ -1,14 +1,13 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import HomePage from './home';
 import TopPage from './top';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<TopPage />} />
         <Route path="/top" element={<TopPage />} />
       </Routes>
       <footer className="p-5 text-right text-xs">
