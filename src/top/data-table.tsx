@@ -76,12 +76,12 @@ export function DataTable<TData, TValue>({
 
   return (
     <Table className="table-auto w-full has-sticky-header">
-      <TableHeader className="sticky top-0 bg-white dark:bg-black">
+      <TableHeader className="sticky top-0 bg-white dark:bg-black  z-10">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header, i) => {
               return (
-                <TableHead key={header.id} className={i === 1 ? 'w-full' : ''}>
+                <TableHead key={header.id} className={i === 0 ? 'w-full' : ''}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -103,7 +103,7 @@ export function DataTable<TData, TValue>({
               className="dark:border-slate-900"
             >
               {row.getVisibleCells().map((cell, i) => (
-                <TableCell key={cell.id} className={i === 1 ? 'max-w-xs truncate whitespace-nowrap' : ''}>
+                <TableCell key={cell.id} className={i === 0 ? 'max-w-xs' : ''}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
@@ -117,9 +117,9 @@ export function DataTable<TData, TValue>({
           </TableRow>
         )}
       </TableBody>
-      <TableFooter className="sticky bottom-0 text-sm bg-white dark:bg-black">
+      <TableFooter className="sticky bottom-0 text-sm bg-white dark:bg-black z-10">
         <TableRow>
-          <TableCell colSpan={2}>
+          <TableCell colSpan={1}>
             <Badge variant="outline" className="mx-1 font-mono text-muted-foreground">
               {postCount.toLocaleString()} Posts
             </Badge>
@@ -127,7 +127,7 @@ export function DataTable<TData, TValue>({
               {Object.entries(linksWithCount).length.toLocaleString()} Unique Links
             </Badge>
           </TableCell>
-          <TableCell className="text-right" colSpan={columns.length - 2}>
+          <TableCell className="text-right" colSpan={columns.length - 1}>
             <Button
               onClick={() => downloadJSON()}
               variant="outline"
@@ -170,11 +170,11 @@ export function DataTable<TData, TValue>({
             >
               <ChevronLeft />
             </Button>
-            {pauseCollection && <Button 
-              className="text-muted-foreground mx-1 text-xs" 
-              variant="outline" 
-              size={"sm"} 
-              onClick={() => setPauseCollection(false)} 
+            {pauseCollection && <Button
+              className="text-muted-foreground mx-1 text-xs"
+              variant="outline"
+              size={"sm"}
+              onClick={() => setPauseCollection(false)}
               title="Resume collection of links">
               <Play size={12} className="text-muted-foreground text-green-400" />
               Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
@@ -183,7 +183,7 @@ export function DataTable<TData, TValue>({
               className="text-muted-foreground mx-1 text-xs"
               variant="outline"
               size={"sm"}
-              onClick={() => setPauseCollection(true)} 
+              onClick={() => setPauseCollection(true)}
               title="Pause collection of links">
               <Pause size={12} className="text-muted-foreground text-yellow-500" />
               Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}

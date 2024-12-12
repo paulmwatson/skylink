@@ -3,11 +3,74 @@
 import { Button } from "@/components/ui/button"
 import { LinkInfo } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, ClockArrowDown, ClockArrowUp, MessageCircle, Search, UserPen } from "lucide-react"
+import { ArrowDown, ArrowUp, ClockArrowDown, ClockArrowUp, MessageCircle, Search, UserPen, Image } from "lucide-react"
 
 const formattedTime = (date: Date) => `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
 
 export const columns: ColumnDef<LinkInfo>[] = [
+  {
+    accessorKey: "cleanedUrl",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-full text-left justify-normal"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Link
+          {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
+          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      return <a href={row.original.originalUrl} target="_blank" className="flex items-center space-x-2 ml-1 hover:text-sky-500">
+        <span className="relative flex shrink-0 overflow-hidden rounded">
+          {row.original.meta?.image === undefined && <Image strokeWidth={0.5} className="h-12 w-12 text-gray-300 dark:text-gray-700" />}
+          {row.original.meta?.image !== undefined && <img src={row.original.meta?.image} className="object-cover h-12 w-12" />}
+        </span>
+        <div className="">
+          <p className="leading-none text-base mb-1">{row.original.meta?.title || row.original.domain}</p>
+          <p className="text-xs text-muted-foreground truncate whitespace-nowrap max-w-xs">{row.original.cleanedUrl.toLocaleString()}</p>
+        </div>
+      </a>
+    }
+  },
+  {
+    accessorKey: "domain",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Domain
+          {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
+          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="min-w-48 max-w-48 truncate whitespace-nowrap text-muted-foreground">{row.original.domain}</div>
+  },
+  {
+    accessorKey: "publicSuffix",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <abbr title="Public Suffix">TLD</abbr>
+          {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
+          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="text-muted-foreground">{row.original.publicSuffix}</div>,
+  },
   {
     accessorKey: "dids",
     invertSorting: true,
@@ -26,7 +89,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{row.original.dids.size}</div>,
+    cell: ({ row }) => <div className="text-center text-muted-foreground">{row.original.dids.size}</div>,
     sortingFn: (rowA, rowB) => {
       const setA = rowA.getValue('dids') as Set<string>;
       const setB = rowB.getValue('dids') as Set<string>;
@@ -37,62 +100,6 @@ export const columns: ColumnDef<LinkInfo>[] = [
       if (sizeA > sizeB) return 1;
       return 0;
     }
-  },
-  {
-    accessorKey: "cleanedUrl",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="flex w-full"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          URL
-          {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
-        </Button>
-      )
-    },
-    cell: ({ row }) => {
-      return <a href={row.original.originalUrl} target="_blank" className="hover:text-sky-700">
-        {row.original.cleanedUrl.toLocaleString()}
-      </a>
-
-    }
-  },
-  {
-    accessorKey: "domain",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Domain
-          {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className="min-w-48 max-w-48 truncate whitespace-nowrap">{row.original.domain}</div>
-  },
-  {
-    accessorKey: "publicSuffix",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <abbr title="Public Suffix">TLD</abbr>
-          {column.getIsSorted() === "desc" && <ArrowDown className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "asc" && <ArrowUp className="ml-2 h-4 w-4" />}
-          {!column.getIsSorted() && <ArrowUp className="ml-2 h-4 w-4 text-slate-200 dark:text-slate-800" />}
-        </Button>
-      )
-    },
   },
   {
     accessorKey: "mentions",
@@ -112,7 +119,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{row.original.mentions.toLocaleString()}</div>
+    cell: ({ row }) => <div className="text-center text-muted-foreground">{row.original.mentions.toLocaleString()}</div>
   },
 
   {
@@ -132,7 +139,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <abbr title={row.original.firstSeen.toTimeString()} className="text-xs text-center block whitespace-nowrap">{formattedTime(row.original.firstSeen)}</abbr>
+    cell: ({ row }) => <abbr title={row.original.firstSeen.toTimeString()} className="text-xs text-center block whitespace-nowrap text-muted-foreground">{formattedTime(row.original.firstSeen)}</abbr>
   },
   {
     accessorKey: "lastSeen",
@@ -151,7 +158,7 @@ export const columns: ColumnDef<LinkInfo>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <abbr title={row.original.lastSeen.toTimeString()} className="text-xs text-center block whitespace-nowrap">{formattedTime(row.original.lastSeen)}</abbr>
+    cell: ({ row }) => <abbr title={row.original.lastSeen.toTimeString()} className="text-xs text-center block whitespace-nowrap text-muted-foreground">{formattedTime(row.original.lastSeen)}</abbr>
   },
   {
     accessorKey: "encodedUrl",

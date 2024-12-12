@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
+    "@netlify/functions": "^2.8.2",
     "@types/node": "^22.10.0",
     "@types/papaparse": "^5.3.15",
     "@types/react": "^18.3.12",

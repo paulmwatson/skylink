@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { LinkWithCount, LinkWithInfo } from "@/types";
+import { LinkWithCount, LinkWithInfo, OpenGraphData } from "@/types";
 import { parse } from "tldts";
 import Papa from "papaparse";
 
@@ -65,6 +65,18 @@ export default function Page() {
                 };
               }
 
+              fetch(`/api/meta?url=${encodeURIComponent(newLink)}`).then((response) => {
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch OG data: ${response.status}`);
+                }
+                return response.json();
+              })
+                .then((ogData: OpenGraphData) => {
+                  updatedCounter[newLink].meta = ogData;
+                }).catch((error) => {
+                  console.error(`Error fetching OG data for ${newLink}:`, error);
+                });
+
               return updatedCounter;
             });
           }
@@ -122,7 +134,7 @@ export default function Page() {
   return (
     <section>
       <header className="p-5">
-        <h2 className="text-2xl font-bold tracking-tight">Links On Bluesky</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Skylink</h2>
         <p className="text-muted-foreground">Live tally of unique links mentioned in Bluesky posts. Runs in your browser, nothing is stored.</p>
       </header>
       <DataTable
