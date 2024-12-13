@@ -2,3 +2,9 @@ div:has(> .has-sticky-header) {
   position: unset;
   overflow: unset;
 }
+
+.word-wrap-and-break {
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}

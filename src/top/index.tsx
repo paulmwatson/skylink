@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { LinkWithCount, LinkWithInfo } from "@/types";
+import { LinkWithCount, LinkWithInfo, OpenGraphData } from "@/types";
 import { parse } from "tldts";
 import Papa from "papaparse";
 
+import { urlLowercaseHostname } from "@/utils/urls";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
@@ -34,7 +35,7 @@ export default function Page() {
         const links = data.commit.record.facets
           .flatMap((facet: { features: any; }) => facet.features)
           .filter((feature: { [x: string]: string; }) => feature['$type'] === 'app.bsky.richtext.facet#link')
-          .map((feature: { uri: any; }) => feature.uri.toLocaleLowerCase());
+          .map((feature: { uri: any; }) => urlLowercaseHostname(feature.uri));
 
         links.forEach((newLink: string) => {
           const parsedLink = parse(newLink);
@@ -64,6 +65,18 @@ export default function Page() {
                   originalUrl: newLink
                 };
               }
+
+              fetch(`/api/meta?url=${encodeURIComponent(newLink)}`).then((response) => {
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch OG data: ${response.status}`);
+                }
+                return response.json();
+              })
+                .then((ogData: OpenGraphData) => {
+                  updatedCounter[newLink].meta = ogData;
+                }).catch((error) => {
+                  console.error(`Error fetching OG data for ${newLink}:`, error);
+                });
 
               return updatedCounter;
             });
@@ -122,7 +135,7 @@ export default function Page() {
   return (
     <section>
       <header className="p-5">
-        <h2 className="text-2xl font-bold tracking-tight">Links On Bluesky</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Skylink</h2>
         <p className="text-muted-foreground">Live tally of unique links mentioned in Bluesky posts. Runs in your browser, nothing is stored.</p>
       </header>
       <DataTable

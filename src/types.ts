@@ -1,3 +1,11 @@
+export interface OpenGraphData {
+  title: string | undefined;
+  description: string | undefined;
+  image: string | undefined;
+  url: string | undefined;
+  status: number | undefined;
+}
+
 export interface LinkInfo {
   mentions: number;
   domain: string;
@@ -9,6 +17,7 @@ export interface LinkInfo {
   lastSeen: Date;
   originalUrl: string;
   dids: Set<string>;
+  meta?: OpenGraphData;
 }
 
 export type SortableColumn = 'mentions' | 'domain' | 'publicSuffix' | 'cleanedUrl' | 'firstSeen' | 'lastSeen';

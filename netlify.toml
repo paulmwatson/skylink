@@ -2,3 +2,13 @@
   from = "/*"
   to = "/"
   status = 200
+
+[build]
+  edge_functions = "netlify/edge-functions"
+  publish = "dist"
+
+[[redirects]]
+  from = "/api/meta*"
+  to = "/api/meta"
+  status = 200
+  force = true
