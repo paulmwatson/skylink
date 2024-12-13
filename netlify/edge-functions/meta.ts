@@ -14,13 +14,15 @@ export default async (request: Request): Promise<Response> => {
   }
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'skylink.paulmwatson.com/1'
+      }
+    });
     if (!response.ok) {
       return new Response(JSON.stringify({
-        title: undefined,
-        description: undefined,
-        image: undefined,
-        url: url
+        url: url,
+        status: response.status
       }), {
         status: 200,
         headers: {
@@ -64,7 +66,8 @@ export default async (request: Request): Promise<Response> => {
       title: title,
       description: description,
       image: image,
-      url: ogUrl
+      url: ogUrl,
+      status: response.status
     }
 
     return new Response(JSON.stringify(ogData), {
@@ -77,9 +80,6 @@ export default async (request: Request): Promise<Response> => {
     });
   } catch (error) {
     return new Response(JSON.stringify({
-      title: undefined,
-      description: undefined,
-      image: undefined,
       url: url
     }), {
       status: 200,

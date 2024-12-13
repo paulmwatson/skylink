@@ -30,9 +30,13 @@ export const columns: ColumnDef<LinkInfo>[] = [
           {row.original.meta?.image === undefined && <Image strokeWidth={0.5} className="h-12 w-12 text-gray-300 dark:text-gray-700" />}
           {row.original.meta?.image !== undefined && <img src={row.original.meta?.image} className="object-cover h-12 w-12" />}
         </span>
-        <div className="">
-          <p className="leading-none text-base mb-1">{row.original.meta?.title || row.original.domain}</p>
-          <p className="text-xs text-muted-foreground truncate whitespace-nowrap max-w-xs">{row.original.cleanedUrl.toLocaleString()}</p>
+        <div>
+          <p className="leading-none text-base mb-1 word-wrap-and-break">
+            {row.original.meta?.title || row.original.domain}
+          </p>
+          <p className="text-xs text-muted-foreground truncate whitespace-nowrap max-w-xs">
+            {row.original.cleanedUrl.toLocaleString()}
+          </p>
         </div>
       </a>
     }

@@ -3,18 +3,9 @@ import { LinkWithCount, LinkWithInfo, OpenGraphData } from "@/types";
 import { parse } from "tldts";
 import Papa from "papaparse";
 
+import { urlLowercaseHostname } from "@/utils/urls";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-
-const lowercaseUrlHostname = (url: string): string => {
-  try {
-    const parsedUrl = new URL(url);
-    parsedUrl.hostname = parsedUrl.hostname.toLowerCase();
-    return parsedUrl.toString();
-  } catch (error) {
-    return url;
-  }
-}
 
 export default function Page() {
   const [linksWithCount, setLinksWithCount] = useState<LinkWithCount>({});
@@ -44,7 +35,7 @@ export default function Page() {
         const links = data.commit.record.facets
           .flatMap((facet: { features: any; }) => facet.features)
           .filter((feature: { [x: string]: string; }) => feature['$type'] === 'app.bsky.richtext.facet#link')
-          .map((feature: { uri: any; }) => lowercaseUrlHostname(feature.uri));
+          .map((feature: { uri: any; }) => urlLowercaseHostname(feature.uri));
 
         links.forEach((newLink: string) => {
           const parsedLink = parse(newLink);

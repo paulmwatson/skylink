@@ -3,6 +3,7 @@ export interface OpenGraphData {
   description: string | undefined;
   image: string | undefined;
   url: string | undefined;
+  status: number | undefined;
 }
 
 export interface LinkInfo {
