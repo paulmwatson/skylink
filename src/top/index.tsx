@@ -3,6 +3,8 @@ import { LinkWithCount, LinkWithInfo } from "@/types";
 import { parse } from "tldts";
 import Papa from "papaparse";
 
+import { urlLowercaseHostname } from "@/lib/urls";
+
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
@@ -34,7 +36,7 @@ export default function Page() {
         const links = data.commit.record.facets
           .flatMap((facet: { features: any; }) => facet.features)
           .filter((feature: { [x: string]: string; }) => feature['$type'] === 'app.bsky.richtext.facet#link')
-          .map((feature: { uri: any; }) => feature.uri.toLocaleLowerCase());
+          .map((feature: { uri: any; }) => urlLowercaseHostname(feature.uri));
 
         links.forEach((newLink: string) => {
           const parsedLink = parse(newLink);
